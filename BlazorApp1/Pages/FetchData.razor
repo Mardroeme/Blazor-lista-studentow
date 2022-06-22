@@ -1,0 +1,86 @@
+﻿@page "/Lista Studentów"
+
+<PageTitle>Lista Studentów</PageTitle>
+
+@using BlazorApp1.Data
+<h1>Lista Studentów</h1>
+
+@if (students == null) 
+{
+    <p>Loading...</p>
+}
+else{
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+                <th>Index</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Students student in students)
+            {
+                <tr>
+                    <td>@student.Name</td>
+                    <td>@student.Surname</td>
+                    <td>@student.Index</td>
+                </tr>
+            }
+        </tbody>
+       
+        <input value = "@newname"
+         @onchange = "@((ChangeEventArgs __e)=>newname=__e?.Value?.ToString())"/>
+         <input value = "@newsurname"
+         @onchange = "@((ChangeEventArgs __e)=>newsurname=__e?.Value?.ToString())"/>
+         <input value = "@newindex"
+         @onchange = "@((ChangeEventArgs __e)=>newindex=__e?.Value?.ToString())"/>
+         <button @onclick = "@addStudent">Dodaj</button>
+    </table>  
+    
+}
+@code {
+    private string? newname { get; set; }
+    private string? newsurname { get; set; }
+    private string? newindex { get; set; }
+    class Students
+    {
+        public string Name;
+        public string Surname;
+        public int Index;
+        public Students(string name, string surname, int index)
+        {
+            Name = name;
+            Surname = surname;
+            Index = index;
+        }
+    }
+
+    List<Students> students = new List<Students>();
+    protected override void OnInitialized()
+    {
+        students.Add(new Students("Jan","Kowalski",553421));
+        students.Add(new Students("Marek","Nowicki",556412));
+        students.Add(new Students("Ryszard","Mazur",554132));
+        students.Add(new Students("Fabjan","Wieczorek",555231));
+
+    }
+    protected void addStudent()
+    {
+        int i = 0;
+        try{
+        i = Int32.Parse(newindex);
+        }catch(Exception e){
+           newindex = "";
+        }
+
+        if (newname != "" && newsurname != "" && newindex != "")
+        {
+            students.Add(new Students(newname, newsurname, i));
+            newname = "";
+            newsurname = "";
+            newindex = "";
+        }
+    }
+}
